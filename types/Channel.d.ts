@@ -1,3 +1,6 @@
+/// <reference types="node" />
+import { EventEmitter } from "events";
+import { ExecuteMessage } from "./ExecuteMessage";
 import { IChannelOptions } from "./IChannelOptions";
 import { IMessageMap } from "./IMessageMap";
 import { InvokeMessage } from "./InvokeMessage";
@@ -5,8 +8,7 @@ import { IReceiver } from "./IReceiver";
 import { ISender } from "./ISender";
 import { Message } from "./Message";
 import { ReturnMessage } from "./ReturnMessage";
-import { ExecuteMessage } from "./ExecuteMessage";
-export declare class Channel {
+export declare class Channel extends EventEmitter {
     protected receiver: IReceiver;
     protected sender: ISender;
     protected context: any;

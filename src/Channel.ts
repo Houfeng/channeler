@@ -1,3 +1,5 @@
+import { EventEmitter } from "events";
+import { ExecuteMessage } from "./ExecuteMessage";
 import { IChannelOptions } from "./IChannelOptions";
 import { IMessageMap } from "./IMessageMap";
 import { InvokeError } from "./InvokeError";
@@ -8,17 +10,17 @@ import { isFunction, isString } from "util";
 import { Message, MessageSymbol } from "./Message";
 import { MessageType } from "./MessageType";
 import { ReturnMessage } from "./ReturnMessage";
-import { ExecuteMessage } from "./ExecuteMessage";
 
 const { getByPath, setByPath } = require("ntils");
 
-export class Channel {
+export class Channel extends EventEmitter {
   protected receiver: IReceiver;
   protected sender: ISender;
   protected context: any;
   protected pendings: IMessageMap = {};
 
   constructor(options: IChannelOptions = {}) {
+    super();
     this.init(options);
   }
 
