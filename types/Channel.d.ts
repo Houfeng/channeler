@@ -19,8 +19,8 @@ export declare class Channel {
     protected stringify(obj: any): string;
     protected onMessageReceived: (event: any) => void;
     protected onReturnMessageReceived: (message: ReturnMessage) => void;
-    protected onInvokeMessageReceived: (message: InvokeMessage) => void;
-    protected onExecuteMessageReceived: (message: ExecuteMessage) => void;
+    protected onInvokeMessageReceived: (message: InvokeMessage) => Promise<void>;
+    protected onExecuteMessageReceived: (message: ExecuteMessage) => Promise<void>;
     protected send(message: Message): void;
     invoke: (path: string, ...args: any[]) => Promise<any>;
     execute: (fn: Function, params?: any) => Promise<any>;

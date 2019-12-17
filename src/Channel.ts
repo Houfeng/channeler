@@ -87,7 +87,7 @@ export class Channel {
     delete this.pendings[id];
   };
 
-  protected onInvokeMessageReceived = (message: InvokeMessage) => {
+  protected onInvokeMessageReceived = async (message: InvokeMessage) => {
     const { id, path, args = [] } = message;
     let error: InvokeError, result: any;
     try {
@@ -96,11 +96,11 @@ export class Channel {
         const pathParts = path.split(".");
         pathParts.pop();
         const parent = getByPath(this.context, pathParts.join("."));
-        result = current.apply(parent, args);
+        result = await current.apply(parent, args);
       } else if (args && args.length > 0) {
-        result = setByPath(this.context, path, args[0]);
+        result = await setByPath(this.context, path, args[0]);
       } else {
-        result = getByPath(this.context, path);
+        result = await getByPath(this.context, path);
       }
     } catch (err) {
       error = new InvokeError(err);
@@ -109,14 +109,14 @@ export class Channel {
     this.send(returnMessage);
   };
 
-  protected onExecuteMessageReceived = (message: ExecuteMessage) => {
+  protected onExecuteMessageReceived = async (message: ExecuteMessage) => {
     const { id, code, params } = message;
     let error: InvokeError, result: any;
     try {
       // tslint:disable-next-line
       const func = new Function('$', `return (${code}).call(this,$)`);
       // tslint:disable-next-line
-      result = func.call(this.context, params);
+      result = await func.call(this.context, params);
     } catch (err) {
       error = new InvokeError(err);
     }
