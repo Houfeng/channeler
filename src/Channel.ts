@@ -39,11 +39,29 @@ export class Channel {
     return !!message && !!event;
   }
 
+  protected parse = (text: string) => {
+    try {
+      return JSON.parse(text);
+    } catch {
+      return null;
+    }
+  };
+
+  protected stringify(obj: any) {
+    return JSON.stringify(obj);
+  }
+
   protected onMessageReceived = (event: any) => {
     const data = isString(event) ? event : event.data;
     if (!data) return;
-    const msg: Message = JSON.parse(data);
-    if (MessageSymbol !== msg.symbol || !this.checkMessage(msg, event)) return;
+    const msg: Message = this.parse(data);
+    if (
+      !msg ||
+      MessageSymbol !== msg.symbol ||
+      !this.checkMessage(msg, event)
+    ) {
+      return;
+    }
     switch (msg.type) {
       case MessageType.return:
         this.onReturnMessageReceived(msg as ReturnMessage);
@@ -107,7 +125,7 @@ export class Channel {
   };
 
   protected send(message: Message) {
-    const content = JSON.stringify(message);
+    const content = this.stringify(message);
     if (this.sender.postMessage) return this.sender.postMessage(content, "*");
     if (this.sender.send) return this.sender.send(content);
   }
