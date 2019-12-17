@@ -1,4 +1,4 @@
-import { IframeChannel } from '../src';
+import { IframeChannel, source } from '../src';
 
 const channel = new IframeChannel({
   url: "//localhost:6002/child.html"
@@ -9,4 +9,5 @@ channel.on('ready', async () => {
   console.log('ready', result);
 });
 
+(window as any).source = source;
 (window as any).channel = channel;

@@ -5,6 +5,8 @@ dev:
       - types
   - name: typescript
   - name: webpack
+    common:
+      disabled: true
     entry: ./examples/*.tsx
     template: ./assets/*.html
     watch: true
@@ -21,6 +23,7 @@ build:
       - types
   - name: typescript
   - name: webpack
+    sourceMap: false
     common:
       disabled: true
     entry: ./src/index.ts
@@ -31,6 +34,7 @@ build:
       library: 'Channeler'
       libraryTarget: 'umd'
       umdNamedDefine: true
+  - name: exit
 
 test:
   - name: tslint
