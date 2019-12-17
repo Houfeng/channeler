@@ -96,7 +96,7 @@ export class Channel {
         const pathParts = path.split(".");
         pathParts.pop();
         const parent = getByPath(this.context, pathParts.join("."));
-        result = current.call(parent, args);
+        result = current.apply(parent, args);
       } else if (args && args.length > 0) {
         result = setByPath(this.context, path, args[0]);
       } else {
