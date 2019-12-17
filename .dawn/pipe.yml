@@ -1,0 +1,44 @@
+dev:
+  - name: clean
+    target:
+      - build
+      - types
+  - name: typescript
+  - name: webpack
+    entry: ./examples/*.tsx
+    template: ./assets/*.html
+    watch: true
+  - name: server
+    port: 6001
+  - name: server
+    port: 6002
+    autoOpen: false
+
+build:
+  - name: clean
+    target:
+      - build
+      - types
+  - name: typescript
+  - name: webpack
+    common:
+      disabled: true
+    entry: ./src/index.ts
+    template: none
+    folders:
+      js: '.'
+    umd:
+      library: 'Channeler'
+      libraryTarget: 'umd'
+      umdNamedDefine: true
+
+test:
+  - name: tslint
+
+publish:
+  - name: version
+  - name: shell
+    script:
+      - dn test
+      - dn build
+      - npm pu --registry=http://registry.npmjs.org
