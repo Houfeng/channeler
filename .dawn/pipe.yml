@@ -42,3 +42,4 @@ publish:
       - dn test
       - dn build
       - npm pu --registry=http://registry.npmjs.org
+  - name: submitter
