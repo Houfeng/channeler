@@ -93,11 +93,11 @@ export class Channel extends EventEmitter {
     const { id, path, args = [] } = message;
     let error: InvokeError, result: any;
     try {
-      const current = getByPath(this.context, path);
+      const current = await getByPath(this.context, path);
       if (isFunction(current)) {
         const pathParts = path.split(".");
         pathParts.pop();
-        const parent = getByPath(this.context, pathParts.join("."));
+        const parent = await getByPath(this.context, pathParts.join("."));
         result = await current.apply(parent, args);
       } else if (args && args.length > 0) {
         result = await setByPath(this.context, path, args[0]);
