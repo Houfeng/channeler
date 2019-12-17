@@ -5,7 +5,7 @@ import { IReceiver } from "./IReceiver";
 import { ISender } from "./ISender";
 import { Message } from "./Message";
 import { ReturnMessage } from "./ReturnMessage";
-import { ExcuteMessage } from "./ExecuteMessage";
+import { ExecuteMessage } from "./ExecuteMessage";
 export declare class Channel {
     protected receiver: IReceiver;
     protected sender: ISender;
@@ -20,8 +20,8 @@ export declare class Channel {
     protected onMessageReceived: (event: any) => void;
     protected onReturnMessageReceived: (message: ReturnMessage) => void;
     protected onInvokeMessageReceived: (message: InvokeMessage) => void;
-    protected onExcuteMessageReceived: (message: ExcuteMessage) => void;
+    protected onExecuteMessageReceived: (message: ExecuteMessage) => void;
     protected send(message: Message): void;
     invoke: (path: string, ...args: any[]) => Promise<any>;
-    excute: (fn: Function) => Promise<any>;
+    execute: (fn: Function, params?: any) => Promise<any>;
 }

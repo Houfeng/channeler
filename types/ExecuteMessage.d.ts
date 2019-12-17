@@ -1,6 +1,7 @@
 import { Message } from "./Message";
-export declare class ExcuteMessage extends Message {
+export declare class ExecuteMessage extends Message {
     code: string;
-    constructor(code: string);
+    params: any;
+    constructor(code: string, params?: any);
     toJSON(): any;
 }

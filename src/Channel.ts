@@ -8,7 +8,7 @@ import { isFunction, isString } from "util";
 import { Message, MessageSymbol } from "./Message";
 import { MessageType } from "./MessageType";
 import { ReturnMessage } from "./ReturnMessage";
-import { ExcuteMessage } from "./ExecuteMessage";
+import { ExecuteMessage } from "./ExecuteMessage";
 
 const { getByPath, setByPath } = require("ntils");
 
@@ -69,8 +69,8 @@ export class Channel {
       case MessageType.invoke:
         this.onInvokeMessageReceived(msg as InvokeMessage);
         break;
-      case MessageType.excute:
-        this.onExcuteMessageReceived(msg as ExcuteMessage);
+      case MessageType.execute:
+        this.onExecuteMessageReceived(msg as ExecuteMessage);
         break;
     }
   };
@@ -109,14 +109,14 @@ export class Channel {
     this.send(returnMessage);
   };
 
-  protected onExcuteMessageReceived = (message: ExcuteMessage) => {
-    const { id, code } = message;
+  protected onExecuteMessageReceived = (message: ExecuteMessage) => {
+    const { id, code, params } = message;
     let error: InvokeError, result: any;
     try {
       // tslint:disable-next-line
-      const func = new Function(`return (${code}).call(this,this)`);
+      const func = new Function('$', `return (${code}).call(this,$)`);
       // tslint:disable-next-line
-      result = func.call(this.context);
+      result = func.call(this.context, params);
     } catch (err) {
       error = new InvokeError(err);
     }
@@ -137,8 +137,8 @@ export class Channel {
     return message.promise;
   };
 
-  public excute = (fn: Function) => {
-    const message = new ExcuteMessage(fn.toString());
+  public execute = (fn: Function, params: any = {}) => {
+    const message = new ExecuteMessage(fn.toString(), params);
     this.pendings[message.id] = message;
     this.send(message);
     return message.promise;
