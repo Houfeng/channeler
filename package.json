@@ -1,6 +1,6 @@
 {
   "name": "channeler",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "",
   "main": "./build/index.js",
   "types": "./types/index.d.ts",
@@ -10,8 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ntils": "^4.0.8",
-    "shortid": "^2.2.15"
+    "ntils": "^4.0.8"
   },
   "devDependencies": {
     "@types/node": "^12.12.18",
