@@ -1,7 +1,7 @@
 import { Message } from "./Message";
 import { MessageType } from "./MessageType";
 
-export class ExecuteMessage extends Message {
+export class ExecuteMessage<R = any> extends Message<R> {
   constructor(public code: string, public params: any = {}) {
     super(MessageType.execute);
   }

@@ -1,4 +1,4 @@
-export declare class InvokeError {
+export declare class ChannelError {
     protected error: Error;
     constructor(message: string | Error);
     get name(): string;

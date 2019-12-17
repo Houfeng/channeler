@@ -1,7 +1,7 @@
 import { Message } from "./Message";
 import { MessageType } from "./MessageType";
 
-export class InvokeMessage extends Message {
+export class InvokeMessage<R = any> extends Message<R> {
   constructor(public path: string, public args: any[]) {
     super(MessageType.invoke);
   }

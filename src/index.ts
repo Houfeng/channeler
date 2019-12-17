@@ -8,5 +8,5 @@ export * from "./ISender";
 export * from "./Message";
 export * from "./MessageType";
 export * from "./ReturnMessage";
-export * from "./IframeChannel";
 export * from "./ExecuteMessage";
+export * from "./ChannelError";

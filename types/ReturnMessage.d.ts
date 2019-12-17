@@ -1,8 +1,8 @@
 import { Message } from "./Message";
-import { InvokeError } from "./InvokeError";
-export declare class ReturnMessage extends Message {
+import { ChannelError } from "./ChannelError";
+export declare class ReturnMessage<R = any> extends Message<R> {
     result: any;
-    error: Error | InvokeError;
+    error: Error | ChannelError;
     constructor(value: any, id: string);
     toJSON(): any;
 }

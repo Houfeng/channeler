@@ -17,13 +17,13 @@ export declare class Channel extends EventEmitter {
     protected init(options: IChannelOptions): void;
     protected bindMessageReceived(): void;
     protected checkMessage(message?: Message, event?: any): boolean;
-    protected parse: (text: string) => any;
+    protected parse(text: string): any;
     protected stringify(obj: any): string;
     protected onMessageReceived: (event: any) => void;
-    protected onReturnMessageReceived: (message: ReturnMessage) => void;
-    protected onInvokeMessageReceived: (message: InvokeMessage) => Promise<void>;
-    protected onExecuteMessageReceived: (message: ExecuteMessage) => Promise<void>;
+    protected onReturnMessageReceived(message: ReturnMessage): void;
+    protected onInvokeMessageReceived(message: InvokeMessage): Promise<void>;
+    protected onExecuteMessageReceived(message: ExecuteMessage): Promise<void>;
     protected send(message: Message): void;
-    invoke: (path: string, ...args: any[]) => Promise<any>;
-    execute: (fn: Function, params?: any) => Promise<any>;
+    invoke<R = any>(path: string, ...args: any[]): Promise<R>;
+    execute<R = any, P = any>(fn: (params?: P) => R, params?: P): Promise<R>;
 }

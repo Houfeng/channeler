@@ -4,14 +4,14 @@ const { newGuid } = require("ntils");
 
 export const MessageSymbol = "__channeler__";
 
-export class Message {
+export class Message<R = any> {
   public symbol = MessageSymbol;
   public resolve: (value: any) => void;
   public reject: (err: Error) => void;
-  public promise: Promise<any>;
+  public promise: Promise<R>;
   constructor(public type: MessageType, public id?: string) {
     this.id = id || newGuid();
-    this.promise = new Promise((resove, reject) => {
+    this.promise = new Promise<R>((resove, reject) => {
       this.resolve = resove;
       this.reject = reject;
     });

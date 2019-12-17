@@ -1,13 +1,13 @@
 import { Message } from "./Message";
 import { MessageType } from "./MessageType";
-import { InvokeError } from "./InvokeError";
+import { ChannelError } from "./ChannelError";
 
-export class ReturnMessage extends Message {
+export class ReturnMessage<R = any> extends Message<R> {
   public result: any;
-  public error: Error | InvokeError;
+  public error: Error | ChannelError;
   constructor(value: any, id: string) {
     super(MessageType.return, id);
-    if (value instanceof Error || value instanceof InvokeError) {
+    if (value instanceof Error || value instanceof ChannelError) {
       this.error = value;
     } else {
       this.result = value;

@@ -1,6 +1,6 @@
 import { isString } from "util";
 
-export class InvokeError {
+export class ChannelError {
   protected error: Error;
   constructor(message: string | Error) {
     this.error = isString(message) ? new Error(message) : message;
@@ -23,4 +23,4 @@ export class InvokeError {
   }
 }
 
-Object.setPrototypeOf(InvokeError.prototype, Error.prototype);
+Object.setPrototypeOf(ChannelError.prototype, Error.prototype);

@@ -2,7 +2,7 @@ import { EventEmitter } from "events";
 import { ExecuteMessage } from "./ExecuteMessage";
 import { IChannelOptions } from "./IChannelOptions";
 import { IMessageMap } from "./IMessageMap";
-import { InvokeError } from "./InvokeError";
+import { ChannelError } from "./ChannelError";
 import { InvokeMessage } from "./InvokeMessage";
 import { IReceiver } from "./IReceiver";
 import { ISender } from "./ISender";
@@ -41,13 +41,13 @@ export class Channel extends EventEmitter {
     return !!message && !!event;
   }
 
-  protected parse = (text: string) => {
+  protected parse(text: string) {
     try {
       return JSON.parse(text);
     } catch {
       return null;
     }
-  };
+  }
 
   protected stringify(obj: any) {
     return JSON.stringify(obj);
@@ -77,21 +77,21 @@ export class Channel extends EventEmitter {
     }
   };
 
-  protected onReturnMessageReceived = (message: ReturnMessage) => {
+  protected onReturnMessageReceived(message: ReturnMessage) {
     const { id, result, error } = message;
     const pending = this.pendings[id];
     if (error) {
-      pending.reject(new InvokeError(error).toError());
+      pending.reject(new ChannelError(error).toError());
     } else {
       pending.resolve(result);
     }
     this.pendings[id] = null;
     delete this.pendings[id];
-  };
+  }
 
-  protected onInvokeMessageReceived = async (message: InvokeMessage) => {
+  protected async onInvokeMessageReceived(message: InvokeMessage) {
     const { id, path, args = [] } = message;
-    let error: InvokeError, result: any;
+    let error: ChannelError, result: any;
     try {
       const current = await getByPath(this.context, path);
       if (isFunction(current)) {
@@ -105,26 +105,26 @@ export class Channel extends EventEmitter {
         result = await getByPath(this.context, path);
       }
     } catch (err) {
-      error = new InvokeError(err);
+      error = new ChannelError(err);
     }
     const returnMessage = new ReturnMessage(error || result, id);
     this.send(returnMessage);
-  };
+  }
 
-  protected onExecuteMessageReceived = async (message: ExecuteMessage) => {
+  protected async onExecuteMessageReceived(message: ExecuteMessage) {
     const { id, code, params } = message;
-    let error: InvokeError, result: any;
+    let error: ChannelError, result: any;
     try {
       // tslint:disable-next-line
       const func = new Function('$', `return (${code}).call(this,$)`);
       // tslint:disable-next-line
       result = await func.call(this.context, params);
     } catch (err) {
-      error = new InvokeError(err);
+      error = new ChannelError(err);
     }
     const returnMessage = new ReturnMessage(error || result, id);
     this.send(returnMessage);
-  };
+  }
 
   protected send(message: Message) {
     const content = this.stringify(message);
@@ -132,17 +132,17 @@ export class Channel extends EventEmitter {
     if (this.sender.send) return this.sender.send(content);
   }
 
-  public invoke = (path: string, ...args: any[]) => {
-    const message = new InvokeMessage(path, args);
+  public invoke<R = any>(path: string, ...args: any[]) {
+    const message = new InvokeMessage<R>(path, args);
     this.pendings[message.id] = message;
     this.send(message);
     return message.promise;
-  };
+  }
 
-  public execute = (fn: Function, params: any = {}) => {
-    const message = new ExecuteMessage(fn.toString(), params);
+  public execute<R = any, P = any>(fn: (params?: P) => R, params?: P) {
+    const message = new ExecuteMessage<R>(fn.toString(), params);
     this.pendings[message.id] = message;
     this.send(message);
     return message.promise;
-  };
+  }
 }
