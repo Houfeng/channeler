@@ -19,7 +19,7 @@ dev:
 build:
   - name: clean
     target:
-      - build
+      - dist
       - types
   - name: typescript
   - name: webpack
@@ -28,13 +28,13 @@ build:
       disabled: true
     entry: ./src/index.ts
     template: none
+    output: ./dist/
     folders:
       js: '.'
     umd:
       library: 'Channeler'
       libraryTarget: 'umd'
       umdNamedDefine: true
-  - name: exit
 
 test:
   - name: tslint

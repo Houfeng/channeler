@@ -1,21 +1,23 @@
 import { MessageType } from "./MessageType";
+import { symbol } from "./Symbol";
 
 const { newGuid } = require("ntils");
 
-export const MessageSymbol = "__channeler__";
-
 export class Message<R = any> {
-  public symbol = MessageSymbol;
+  public symbol = symbol;
+  public id: string;
   public resolve: (value: any) => void;
   public reject: (err: Error) => void;
   public promise: Promise<R>;
-  constructor(public type: MessageType, public id?: string) {
+
+  constructor(public type: MessageType, id?: string) {
     this.id = id || newGuid();
     this.promise = new Promise<R>((resove, reject) => {
       this.resolve = resove;
       this.reject = reject;
     });
   }
+
   toJSON(): any {
     return { id: this.id, type: this.type, symbol: this.symbol };
   }

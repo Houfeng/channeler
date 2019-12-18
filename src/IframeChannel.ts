@@ -9,6 +9,7 @@ export interface IIframeChannelOptions extends IChannelOptions {
 
 export class IframeChannel extends Channel {
   protected options: IIframeChannelOptions;
+
   constructor(options: IIframeChannelOptions = {}) {
     options = { ...options };
     if (options.url) {

@@ -7,3 +7,12 @@ debug/
 src/
 assets/
 test/
+build/
+logs/
+.dawn/
+examples/
+scripts/
+server.yml
+tsconfig.json
+tslint.json
+webpack.config.js

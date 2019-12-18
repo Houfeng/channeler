@@ -5,7 +5,7 @@ const channel = new IframeChannel({
 });
 
 channel.on('ready', async () => {
-  const result = await channel.execute($ => $, { name: 'houfeng' });
+  const result = await channel.execute(x => x, { name: 'houfeng' });
   console.log('ready', result);
 });
 

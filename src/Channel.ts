@@ -7,9 +7,10 @@ import { InvokeMessage } from "./InvokeMessage";
 import { IReceiver } from "./IReceiver";
 import { ISender } from "./ISender";
 import { isFunction, isString } from "util";
-import { Message, MessageSymbol } from "./Message";
+import { Message } from "./Message";
 import { MessageType } from "./MessageType";
 import { ReturnMessage } from "./ReturnMessage";
+import { symbol } from "./Symbol";
 
 const { getByPath, setByPath } = require("ntils");
 
@@ -57,11 +58,7 @@ export class Channel extends EventEmitter {
     const data = isString(event) ? event : event.data;
     if (!data) return;
     const msg: Message = this.parse(data);
-    if (
-      !msg ||
-      MessageSymbol !== msg.symbol ||
-      !this.checkMessage(msg, event)
-    ) {
+    if (!msg || symbol !== msg.symbol || !this.checkMessage(msg, event)) {
       return;
     }
     switch (msg.type) {
