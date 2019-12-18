@@ -19,7 +19,7 @@ export class IframeChannel extends Channel {
       document.body.appendChild(child);
       options.sender = child.contentWindow;
     } else {
-      options.sender = self.parent;
+      options.sender = options.sender || self.parent;
     }
     super(options);
   }

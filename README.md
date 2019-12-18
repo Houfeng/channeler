@@ -10,15 +10,23 @@ Channeler 是一个专注简化「Browser & Node」进程或线程间通讯的�
 ```ts
 import { IframeChannel } from "channeler";
 
+//自动创建一个「隐藏的 iframe」
 const channel = new IframeChannel({
   url: "//localhost:6002/iframe-child.html",
 });
+
+//关联一个现有 iframe
+const channel = new IframeChannel({
+  sender: document.frames[0]
+});
+
 ```
 
 子页面
 ```ts
 import { IframeChannel } from "channeler";
 
+//通过 channel 可和父页面双向通讯
 const channel = new IframeChannel();
 ```
 
@@ -28,8 +36,15 @@ const channel = new IframeChannel();
 ```ts
 import { PageChannel } from "channeler";
 
+//自动打弄一个新页面
 const channel = new PageChannel({
-  url: "//localhost:6002/iframe-child.html",
+  url: "//localhost:6002/page-child.html",
+});
+
+//关联到指定的页面
+const win = window.open('...')
+const channel = new PageChannel({
+  sender: win,
 });
 ```
 
@@ -37,6 +52,7 @@ const channel = new PageChannel({
 ```ts
 import { PageChannel } from "channeler";
 
+//通过 channel 可和父页面双向通讯
 const channel = new PageChannel();
 ```
 
@@ -46,15 +62,20 @@ const channel = new PageChannel();
 ```ts
 import { WorkerChannel } from "channeler";
 
+//通过 worker 脚本 url 创建 channel
 const channel = new WorkerChannel({
-  url: "//localhost:6002/iframe-child.html",
+  url: "//localhost:6002/worker.js",
 });
+
+//不指定 url，自动创建一个 worker
+const channel = new WorkerChannel();
 ```
 
 工作线程
 ```ts
 import { WorkerChannel } from "channeler";
 
+//通过 channel 可和所属页面双向通讯
 const channel = new WorkerChannel();
 ```
 

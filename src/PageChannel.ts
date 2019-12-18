@@ -18,7 +18,7 @@ export class PageChannel extends Channel {
       options.sender = child;
       setTimeout(() => (child.location.href = options.url), 0);
     } else {
-      options.sender = window.opener;
+      options.sender = options.sender || window.opener;
     }
     super(options);
     this.window = options.sender as Window;
