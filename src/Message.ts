@@ -18,6 +18,13 @@ export class Message<R = any> {
     });
   }
 
+  timeout(callback: Function, delay?: number) {
+    return setTimeout(() => {
+      this.reject(new Error("Channel return timeout"));
+      if (callback) callback();
+    }, delay || 10000);
+  }
+
   toJSON(): any {
     return { id: this.id, type: this.type, symbol: this.symbol };
   }

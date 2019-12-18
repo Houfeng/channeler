@@ -9,6 +9,7 @@ import { ISender } from "./ISender";
 import { Message } from "./Message";
 import { ReturnMessage } from "./ReturnMessage";
 export declare class Channel extends EventEmitter {
+    protected options: IChannelOptions;
     protected receiver: IReceiver;
     protected sender: ISender;
     protected context: any;
@@ -19,6 +20,7 @@ export declare class Channel extends EventEmitter {
     protected checkMessage(message?: Message, event?: any): boolean;
     protected parse(text: string): any;
     protected stringify(obj: any): string;
+    protected removePending(id: string): void;
     protected onMessageReceived: (event: any) => void;
     protected onReturnMessageReceived(message: ReturnMessage): void;
     protected onInvokeMessageReceived(message: InvokeMessage): Promise<void>;

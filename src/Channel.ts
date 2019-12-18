@@ -15,6 +15,7 @@ import { symbol } from "./Symbol";
 const { getByPath, setByPath } = require("ntils");
 
 export class Channel extends EventEmitter {
+  protected options: IChannelOptions;
   protected receiver: IReceiver;
   protected sender: ISender;
   protected context: any;
@@ -26,7 +27,8 @@ export class Channel extends EventEmitter {
   }
 
   protected init(options: IChannelOptions) {
-    const { receiver, sender, context } = { ...options };
+    this.options = { ...options };
+    const { receiver, sender, context } = this.options;
     this.receiver = (receiver || global.process || global) as IReceiver;
     this.sender = (sender || receiver) as ISender;
     this.context = context || global;
@@ -54,6 +56,11 @@ export class Channel extends EventEmitter {
     return JSON.stringify(obj);
   }
 
+  protected removePending(id: string) {
+    this.pendings[id] = null;
+    delete this.pendings[id];
+  }
+
   protected onMessageReceived = (event: any) => {
     const data = isString(event) ? event : event.data;
     if (!data) return;
@@ -77,13 +84,13 @@ export class Channel extends EventEmitter {
   protected onReturnMessageReceived(message: ReturnMessage) {
     const { id, result, error } = message;
     const pending = this.pendings[id];
+    if (!pending) return;
     if (error) {
       pending.reject(new ChannelError(error).toError());
     } else {
       pending.resolve(result);
     }
-    this.pendings[id] = null;
-    delete this.pendings[id];
+    this.removePending(id);
   }
 
   protected async onInvokeMessageReceived(message: InvokeMessage) {
@@ -124,21 +131,26 @@ export class Channel extends EventEmitter {
   }
 
   protected send(message: Message) {
+    if (!message) return;
     const content = this.stringify(message);
     if (this.sender.postMessage) return this.sender.postMessage(content, "*");
     if (this.sender.send) return this.sender.send(content);
   }
 
   public invoke<R = any>(path: string, ...args: any[]) {
+    const { timeout } = this.options;
     const message = new InvokeMessage<R>(path, args);
     this.pendings[message.id] = message;
+    message.timeout(() => this.removePending(message.id), timeout);
     this.send(message);
     return message.promise;
   }
 
   public execute<R = any, P = any>(fn: (params?: P) => R, params?: P) {
+    const { timeout } = this.options;
     const message = new ExecuteMessage<R>(fn.toString(), params);
     this.pendings[message.id] = message;
+    message.timeout(() => this.removePending(message.id), timeout);
     this.send(message);
     return message.promise;
   }

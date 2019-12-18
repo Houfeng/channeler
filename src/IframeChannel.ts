@@ -23,7 +23,6 @@ export class IframeChannel extends Channel {
       options.sender = window.parent;
     }
     super(options);
-    this.options = options;
   }
 
   checkMessage(_: Message, event: any) {

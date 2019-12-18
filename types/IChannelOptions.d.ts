@@ -4,4 +4,5 @@ export interface IChannelOptions {
     sender?: ISender;
     receiver?: IReceiver;
     context?: any;
+    timeout?: number;
 }

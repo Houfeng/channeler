@@ -7,5 +7,6 @@ export declare class Message<R = any> {
     reject: (err: Error) => void;
     promise: Promise<R>;
     constructor(type: MessageType, id?: string);
+    timeout(callback: Function, delay?: number): number;
     toJSON(): any;
 }
