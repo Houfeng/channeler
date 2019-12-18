@@ -16,6 +16,9 @@ import { DataMessage } from "./DataMessage";
 
 const { getByPath, setByPath } = require("ntils");
 
+/**
+ * 数据交换通道类
+ */
 export class Channel extends EventEmitter {
   protected options: IChannelOptions;
   protected receiver: IReceiver;
@@ -162,6 +165,11 @@ export class Channel extends EventEmitter {
     if (this.sender.send) return this.sender.send(content);
   }
 
+  /**
+   * 调用一个远程上下文中的变量，目标可以是「方法、普通变量」
+   * @param path 远程变量的 JS Path，比如 location.href
+   * @param args 如果 path 指向的是函数，args 将作为函数的参数
+   */
   public invoke<R = any>(path: string, ...args: any[]) {
     const { timeout } = this.options;
     const message = new InvokeMessage<R>(path, args);
@@ -171,6 +179,28 @@ export class Channel extends EventEmitter {
     return message.promise;
   }
 
+  /**
+   * 设定一个远程变量值
+   * @param path 远程变量 JS Path
+   * @param value 要设定的值
+   */
+  public set<T>(path: string, value: T): void {
+    this.invoke(path, value);
+  }
+
+  /**
+   * 获取一个远程量变量值
+   * @param path 远程变量 JS Path
+   */
+  public get<R>(path: string) {
+    return this.invoke<R>(path);
+  }
+
+  /**
+   * 在通道的另一端执行一个函数，并把执行结果返回
+   * @param fn 远程执行的函数（函数的执行上下文是远程，不可引用当前作用域名变量）
+   * @param params 传递给执行函数的参数对象
+   */
   public execute<R = any, P = any>(fn: (params?: P) => R, params?: P) {
     const { timeout } = this.options;
     const message = new ExecuteMessage<R>(fn.toString(), params);
@@ -180,11 +210,21 @@ export class Channel extends EventEmitter {
     return message.promise;
   }
 
+  /**
+   * 向一个数据通道中发送数据
+   * @param name 数据通道名称
+   * @param data 要发送的数据
+   */
   public pub<T = any>(name: string, data: T): void {
     const message = new DataMessage(name, data);
     this.send(message);
   }
 
+  /**
+   * 订阅一个数据通道中的数据
+   * @param name 数据通道名称
+   * @param handler 数据接收处理函数
+   */
   public sub<T = any>(name: string, handler: (data: T) => void): void {
     this.on(`data:${name}`, handler);
   }
