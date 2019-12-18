@@ -3,7 +3,9 @@ import { WorkerChannel } from "..";
 (async owner => {
   if (!owner.window) return;
 
-  const channel = new WorkerChannel();
+  const channel = new WorkerChannel({
+    // url: "/js/worker-child.js"
+  });
 
   channel.on("ready", async () => {
     try {

@@ -1,2 +1,2 @@
-server: https://alibaba.github.io/dawn
+server: https%3A%2F%2Fquery.aliyun.com%2Frest%2Fdc.service.cli%3Fteam%3Dgeneral%26conf%3D
 registry: https://registry.npm.taobao.org

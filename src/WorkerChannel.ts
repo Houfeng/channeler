@@ -38,7 +38,12 @@ export class WorkerChannel extends Channel {
       source(),
       "self.channel=new self.Channeler.WorkerChannel()"
     ].join(";");
-    const encodeContent = btoa(unescape(encodeURIComponent(content)));
-    return `data:text/javascript;base64,${encodeContent}`;
+    if (self.URL && self.URL.createObjectURL) {
+      const blob = new Blob([content], { type: "application/javascript" });
+      return URL.createObjectURL(blob);
+    } else {
+      const encodeContent = btoa(unescape(encodeURIComponent(content)));
+      return `data:text/javascript;base64,${encodeContent}`;
+    }
   }
 }
