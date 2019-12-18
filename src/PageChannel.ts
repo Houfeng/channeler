@@ -14,7 +14,7 @@ export class PageChannel extends Channel {
     options = { ...options };
     if (options.url) {
       const name = options.target || options.url;
-      const child = window.open("about:blank", name);
+      const child = window.open("", name);
       options.sender = child;
       setTimeout(() => (child.location.href = options.url), 0);
     } else {
