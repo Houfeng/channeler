@@ -11,6 +11,8 @@ import { Message } from "./Message";
 import { MessageType } from "./MessageType";
 import { ReturnMessage } from "./ReturnMessage";
 import { symbol } from "./Symbol";
+import { ReadyMessage } from "./ReadyMessage";
+import { DataMessage } from "./DataMessage";
 
 const { getByPath, setByPath } = require("ntils");
 
@@ -29,10 +31,11 @@ export class Channel extends EventEmitter {
   protected init(options: IChannelOptions) {
     this.options = { ...options };
     const { receiver, sender, context } = this.options;
-    this.receiver = (receiver || global.process || global) as IReceiver;
+    this.receiver = (receiver || self.process || self) as IReceiver;
     this.sender = (sender || receiver) as ISender;
-    this.context = context || global;
+    this.context = context || self;
     this.bindMessageReceived();
+    setTimeout(() => this.sendReadyMessage(), 0);
   }
 
   protected bindMessageReceived() {
@@ -40,13 +43,18 @@ export class Channel extends EventEmitter {
     on.call(this.receiver, "message", this.onMessageReceived, false);
   }
 
+  protected sendReadyMessage() {
+    const message = new ReadyMessage(true);
+    this.send(message);
+  }
+
   protected checkMessage(message?: Message, event?: any) {
     return !!message && !!event;
   }
 
-  protected parse(text: string) {
+  protected parse(str: string) {
     try {
-      return JSON.parse(text);
+      return JSON.parse(str);
     } catch {
       return null;
     }
@@ -69,6 +77,9 @@ export class Channel extends EventEmitter {
       return;
     }
     switch (msg.type) {
+      case MessageType.ready:
+        this.onReadyMessageReceived(msg as ReadyMessage);
+        break;
       case MessageType.return:
         this.onReturnMessageReceived(msg as ReturnMessage);
         break;
@@ -78,8 +89,22 @@ export class Channel extends EventEmitter {
       case MessageType.execute:
         this.onExecuteMessageReceived(msg as ExecuteMessage);
         break;
+      case MessageType.data:
+        this.onDataMessageReceived(msg as DataMessage);
+        break;
     }
   };
+
+  protected onReadyMessageReceived(message: ReadyMessage) {
+    const { state, data } = message;
+    if (state) this.emit("ready");
+    if (data) throw new Error(data);
+  }
+
+  protected onDataMessageReceived(message: DataMessage) {
+    const { name, data } = message;
+    this.emit(`data:${name}`, data);
+  }
 
   protected onReturnMessageReceived(message: ReturnMessage) {
     const { id, result, error } = message;
@@ -153,5 +178,14 @@ export class Channel extends EventEmitter {
     message.timeout(() => this.removePending(message.id), timeout);
     this.send(message);
     return message.promise;
+  }
+
+  public pub<T = any>(name: string, data: T): void {
+    const message = new DataMessage(name, data);
+    this.send(message);
+  }
+
+  public sub<T = any>(name: string, handler: (data: T) => void): void {
+    this.on(`data:${name}`, handler);
   }
 }

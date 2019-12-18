@@ -13,6 +13,7 @@ export class ReturnMessage<R = any> extends Message<R> {
     } else {
       this.result = value;
     }
+    this.resolve(value);
   }
 
   toJSON() {

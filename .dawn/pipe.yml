@@ -1,13 +1,21 @@
+webpack: &webpack
+  common:
+    disabled: true
+  umd:
+    library: 'Channeler'
+    libraryTarget: 'umd'
+    umdNamedDefine: true
+
 dev:
   - name: clean
     target:
       - build
       - types
+  - name: sensitive-path
   - name: typescript
   - name: webpack
-    common:
-      disabled: true
-    entry: ./examples/*.tsx
+    <<: *webpack
+    entry: ./src/examples/*.ts
     template: ./assets/*.html
     watch: true
   - name: server
@@ -21,20 +29,16 @@ build:
     target:
       - dist
       - types
+  - name: sensitive-path
   - name: typescript
   - name: webpack
+    <<: *webpack
     sourceMap: false
-    common:
-      disabled: true
     entry: ./src/index.ts
     template: none
     output: ./dist/
     folders:
       js: '.'
-    umd:
-      library: 'Channeler'
-      libraryTarget: 'umd'
-      umdNamedDefine: true
 
 test:
   - name: tslint

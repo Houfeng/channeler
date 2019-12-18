@@ -15,12 +15,11 @@ export class IframeChannel extends Channel {
     if (options.url) {
       const child = document.createElement("iframe");
       child.src = options.url;
-      child.addEventListener("load", () => this.emit("ready"));
       child.style.display = "none";
       document.body.appendChild(child);
       options.sender = child.contentWindow;
     } else {
-      options.sender = window.parent;
+      options.sender = self.parent;
     }
     super(options);
   }

@@ -1,3 +1,5 @@
+export * from "./Symbol";
+export * from "./source";
 export * from "./Channel";
 export * from "./IframeChannel";
 export * from "./IChannelOptions";
@@ -10,4 +12,5 @@ export * from "./MessageType";
 export * from "./ReturnMessage";
 export * from "./ExecuteMessage";
 export * from "./ChannelError";
-export * from "./source";
+export * from "./WorkerChannel";
+export * from "./PageChannel";

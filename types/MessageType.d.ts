@@ -1,5 +1,7 @@
 export declare enum MessageType {
     invoke = "invoke",
     return = "return",
-    execute = "execute"
+    execute = "execute",
+    ready = "ready",
+    data = "data"
 }
