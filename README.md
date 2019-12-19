@@ -1,12 +1,11 @@
+# ❈ Channeler
 <center>
 
 ![logo](https://img.alicdn.com/tfs/TB1jgooq7L0gK0jSZFtXXXQCXXa-943-94.png)
 
 </center>
 
-# ❈ Channeler
-
-Channeler 是一个专注简化「Browser & Node」进程或线程间通讯的库。
+Channeler 是一个面向「Browser & Node」，输助并简化「进程或线程」间通讯的库。
 
 # ❈ 浏览器环境
 
