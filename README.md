@@ -5,7 +5,7 @@ Channeler 是一个专注简化「Browser & Node」进程或线程间通讯的�
 
 # ❈ 浏览器环境
 
-## ○ 框架页面 (iframe)
+## § 框架页面 (iframe)
 
 ### 父页面
 ```ts
@@ -31,7 +31,7 @@ import { IframeChannel } from "channeler";
 const channel = new IframeChannel();
 ```
 
-## ○ 普通页面 (Page)
+## § 普通页面 (Page)
 
 ### 当前页面
 ```ts
@@ -57,7 +57,7 @@ import { PageChannel } from "channeler";
 const channel = new PageChannel();
 ```
 
-## ○ 工作线程 (Web Worker)
+## § 工作线程 (Web Worker)
 
 ### 当前页面
 ```ts
@@ -89,7 +89,7 @@ TODO://
 
 无论在哪个环境使用那哪种 Channel，都有一致的 API，如下是 Channel 实例上可用的公开方法
 
-## ○ 获取或设定远程数据
+## § 获取或设定远程数据
 
 ### 使用示例
 ```ts
@@ -128,7 +128,7 @@ set<T>(path: string, value: T): void;
 get<R>(path: string): Promise<R>;
 ```
 
-## ○ 在远程执行代码
+## § 在远程执行代码
 
 ### 使用示例
 ```ts
@@ -156,7 +156,7 @@ const text = await channel.execute(({ id })=>{
 execute<R = any, P = any>(fn: (params?: P) => R, params?: P): Promise<R>;
 ```
 
-## ○ 订阅或发布数据
+## § 订阅或发布数据
 ### 使用示例
 ```ts
 //在数据消费端订阅数据
