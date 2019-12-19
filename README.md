@@ -1,21 +1,13 @@
-<pre align="center">
- ██████╗██╗  ██╗ █████╗ ███╗   ██╗███╗   ██╗███████╗██╗     ███████╗██████╗ 
-██╔════╝██║  ██║██╔══██╗████╗  ██║████╗  ██║██╔════╝██║     ██╔════╝██╔══██╗
-██║     ███████║███████║██╔██╗ ██║██╔██╗ ██║█████╗  ██║     █████╗  ██████╔╝
-██║     ██╔══██║██╔══██║██║╚██╗██║██║╚██╗██║██╔══╝  ██║     ██╔══╝  ██╔══██╗
-╚██████╗██║  ██║██║  ██║██║ ╚████║██║ ╚████║███████╗███████╗███████╗██║  ██║
- ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚══════╝╚══════╝╚═╝  ╚═╝               
- </pre>
 
 # Channeler
 
 Channeler 是一个专注简化「Browser & Node」进程或线程间通讯的库。
 
-## 浏览器环境
+# 浏览器环境
 
-### 框架页 (iframe)
+## 框架页面 (iframe)
 
-父页面
+### 父页面
 ```ts
 import { IframeChannel } from "channeler";
 
@@ -31,7 +23,7 @@ const channel = new IframeChannel({
 
 ```
 
-子页面
+### 子页面
 ```ts
 import { IframeChannel } from "channeler";
 
@@ -39,9 +31,9 @@ import { IframeChannel } from "channeler";
 const channel = new IframeChannel();
 ```
 
-### 页面 (Page)
+## 普通页面 (Page)
 
-当前页面
+### 当前页面
 ```ts
 import { PageChannel } from "channeler";
 
@@ -57,7 +49,7 @@ const channel = new PageChannel({
 });
 ```
 
-新开页面
+### 新开页面
 ```ts
 import { PageChannel } from "channeler";
 
@@ -65,9 +57,9 @@ import { PageChannel } from "channeler";
 const channel = new PageChannel();
 ```
 
-### 工作线程 (Web Worker)
+## 工作线程 (Web Worker)
 
-当前页面
+### 当前页面
 ```ts
 import { WorkerChannel } from "channeler";
 
@@ -80,7 +72,7 @@ const channel = new WorkerChannel({
 const channel = new WorkerChannel();
 ```
 
-工作线程
+### 工作线程
 ```ts
 import { WorkerChannel } from "channeler";
 
@@ -88,15 +80,32 @@ import { WorkerChannel } from "channeler";
 const channel = new WorkerChannel();
 ```
 
-## Node 环境
+# Node 环境
 
 TODO://
 
-## 可用 API
+
+# 可用 API
 
 无论在哪个环境使用那哪种 Channel，都有一致的 API，如下是 Channel 实例上可用的公开方法
 
-获取或设定远程数据
+## 获取或设定远程数据
+
+### 使用示例
+```ts
+//调用远端的方法，比如 console.log
+channel.invoke('console.log','hello','bob');
+
+//获取选程页面标题
+const title1 = await channel.invoke('document.title');
+const title2 = await chanell.get('document.title');
+
+//设置远程页面标题
+channel.invoke('document.title', 'test');
+chanell.set('document.title', 'test');
+```
+
+### API 定义
 ```ts
 /**
  * 调用一个远程上下文中的变量，目标可以是「方法、普通变量」
@@ -119,7 +128,25 @@ set<T>(path: string, value: T): void;
 get<R>(path: string): Promise<R>;
 ```
 
-在远程执行一个函数
+## 在远程执行代码
+
+### 使用示例
+```ts
+//在远程执行一段代码，并将结果返回
+//注意，匿名函数中的代码在远程上下文执行，不能使用当前作用域的变量
+const text = await channel.execute(()=>{
+  const input = document.getElementById('#input-id');
+  return input.value;
+});
+
+//向代码中传递变量（需要为无循环引用且可序列化的类型）
+const text = await channel.execute(({ id })=>{
+  const input = document.getElementById(id);
+  return input.value;
+}, { id: '#input-id' });
+```
+
+### API 定义
 ```ts
 /**
  * 在通道的另一端执行一个函数，并把执行结果返回
@@ -129,8 +156,19 @@ get<R>(path: string): Promise<R>;
 execute<R = any, P = any>(fn: (params?: P) => R, params?: P): Promise<R>;
 ```
 
+## 订阅或发布数据
+### 使用示例
+```ts
+//在数据消费端订阅数据
+channel.sub('your_channel_name', data => {
+  console.log('data', data);
+});
 
-订阅或发布数据
+//在数据产生端发布数据
+channel.pub('your_channel_name', data);
+```
+
+### API 定义
 ```ts
 /**
  * 向一个数据通道中发送数据
