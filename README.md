@@ -1,3 +1,11 @@
+<pre align="center">
+ o-o o                      o         
+ /    |                      |         
+O     O--o  oo o-o  o-o  o-o | o-o o-o 
+ \    |  | | | |  | |  | |-' | |-' |   
+  o-o o  o o-o-o  o o  o o-o o o-o o 
+</pre>
+
 # Channeler
 
 Channeler 是一个专注简化「Browser & Node」进程或线程间通讯的库。
