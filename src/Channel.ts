@@ -1,20 +1,23 @@
+import { isFunction, isString } from "ntils";
+
+import { ChannelError } from "./ChannelError";
+import { DataMessage } from "./DataMessage";
 import { EventEmitter } from "events";
 import { ExecuteMessage } from "./ExecuteMessage";
 import { IChannelOptions } from "./IChannelOptions";
 import { IMessageMap } from "./IMessageMap";
-import { ChannelError } from "./ChannelError";
-import { InvokeMessage } from "./InvokeMessage";
 import { IReceiver } from "./IReceiver";
 import { ISender } from "./ISender";
-import { isFunction, isString } from "util";
+import { InvokeMessage } from "./InvokeMessage";
 import { Message } from "./Message";
 import { MessageType } from "./MessageType";
+import { ReadyMessage } from "./ReadyMessage";
 import { ReturnMessage } from "./ReturnMessage";
 import { symbol } from "./Symbol";
-import { ReadyMessage } from "./ReadyMessage";
-import { DataMessage } from "./DataMessage";
 
 const { getByPath, setByPath } = require("ntils");
+const self = typeof globalThis !== "undefined" ? globalThis : this;
+const owner = typeof process !== "undefined" ? process : self;
 
 /**
  * 数据交换通道类
@@ -34,9 +37,9 @@ export class Channel extends EventEmitter {
   protected init(options: IChannelOptions) {
     this.options = { ...options };
     const { receiver, sender, context } = this.options;
-    this.receiver = (receiver || self.process || self) as IReceiver;
+    this.receiver = (receiver || owner) as IReceiver;
     this.sender = (sender || receiver) as ISender;
-    this.context = context || self;
+    this.context = context || owner;
     this.bindMessageReceived();
     setTimeout(() => this.sendReadyMessage(), 0);
   }

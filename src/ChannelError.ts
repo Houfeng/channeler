@@ -1,4 +1,4 @@
-import { isString } from "util";
+import { isString } from "ntils";
 
 export class ChannelError {
   protected error: Error;

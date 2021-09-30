@@ -1,15 +1,15 @@
 /// <reference types="node" />
+import { DataMessage } from "./DataMessage";
 import { EventEmitter } from "events";
 import { ExecuteMessage } from "./ExecuteMessage";
 import { IChannelOptions } from "./IChannelOptions";
 import { IMessageMap } from "./IMessageMap";
-import { InvokeMessage } from "./InvokeMessage";
 import { IReceiver } from "./IReceiver";
 import { ISender } from "./ISender";
+import { InvokeMessage } from "./InvokeMessage";
 import { Message } from "./Message";
-import { ReturnMessage } from "./ReturnMessage";
 import { ReadyMessage } from "./ReadyMessage";
-import { DataMessage } from "./DataMessage";
+import { ReturnMessage } from "./ReturnMessage";
 /**
  * 数据交换通道类
  */
